@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "log.h"
+#include <strerror>
 
 int check_credentials(char *user, char *pass) {
   FILE *file;
@@ -16,7 +18,8 @@ int check_credentials(char *user, char *pass) {
   // check if it is present in any ftpusers line
   file = fopen(path, "r");
   if (file == NULL) {
-    fprintf(stderr, "Error: no se pudo abrir el archivo de usuarios.\n");
+    //fprintf(stderr, "Error: no se pudo abrir el archivo de usuarios.\n");
+    log_write(LOG_ERR, "Error: no se pudo abrir el archivo de usuarios. %s", strerror(errno));
     return -1;
   }
 

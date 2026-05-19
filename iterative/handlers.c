@@ -8,6 +8,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
+#include "log.h"
+#include <strerror>
 
 void handle_USER(const char *args) {
   ftp_session_t *sess = session_get();

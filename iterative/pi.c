@@ -9,6 +9,8 @@
 #include <sys/socket.h>
 #include <errno.h>
 #include <strings.h>
+#include "log.h"
+#include <strerror>
 
 static ftp_command_t ftp_commands[] = {
   { "USER", handle_USER },
@@ -27,7 +29,8 @@ int welcome(ftp_session_t *sess) {
 
   // Send initial FTP welcome message
   if (safe_dprintf(sess->control_sock, MSG_220) != sizeof(MSG_220) - 1) {
-    fprintf(stderr, "Send error\n");
+    //fprintf(stderr, "Send error\n");
+    log_write(LOG_ERR, "Send error %s", strerror(errno));
     close_fd(sess->control_sock, "cliente socket");
     return -1;
   }
@@ -41,7 +44,8 @@ int getexe_command(ftp_session_t *sess) {
   // Receive string from CC
   ssize_t len = recv(sess->control_sock, buffer, sizeof(buffer) - 1, 0);
   if (len < 0) {
-    perror("Receive fail: ");
+    //perror("Receive fail: ");
+    log_write(LOG_ERR, "Receive fail: %s", strerror(errno))
     close_fd(sess->control_sock, "cliente socket");
     return -1;
   }

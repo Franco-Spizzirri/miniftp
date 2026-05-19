@@ -11,7 +11,9 @@
 void close_fd(int fd, const char *label) {
 
   if (close(fd) < 0) {
-    fprintf(stderr, "Error closing %s: ", label);
+    // LOG: Combined previous fprintf and perror logic into centralized syslog error
+    log_write(LOG_ERR, "Error closing %s (fd: %d): %s", label, fd, strerror(errno));
+    //fprintf(stderr, "Error closing %s: ", label);
     perror(NULL);
   }
 }
@@ -23,7 +25,9 @@ ssize_t safe_dprintf(int fd, const char *format, ...) {
   va_end(args);
 
   if (ret < 0) {
-    perror("dprintf error: ");
+    // LOG: Replaced raw stderr perror output with logging framework
+    log_write(LOG_ERR, "dprintf write failure on fd %d: %s", fd, strerror(errno));
+    // perror("dprintf error: ");
   }
   return ret;
 }

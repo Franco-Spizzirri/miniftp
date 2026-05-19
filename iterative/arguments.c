@@ -8,6 +8,8 @@
 #include <arpa/inet.h>
 #include <stdlib.h>
 #include <errno.h>      // perror()
+#include "log.h"
+#include <strerror>
 
 static struct argp_option options[] = {
   { "port",    'p', "PORT", 0, PORT_DOC, 0 },
@@ -26,7 +28,8 @@ static int is_valid_local_ip(const char *ip_str) {
   int found = 0;
 
   if (getifaddrs(&ifaddr) == -1) {
-    perror("getifaddrs");
+    //perror("getifaddrs");
+    log_write(LOG_ERR, "getifaddrs: %s", strerror(errno)); 
     return 0;
   }
 
